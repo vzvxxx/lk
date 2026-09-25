@@ -1,0 +1,939 @@
+/* ---------- РАЗМЕРЫ ТЕКСТА ---------- */
+
+/* Семь имён с числами. Все правила ниже ссылаются на имена,
+   а не на числа. Поменять размер по всему сайту = поменять здесь.
+
+   :root ("корень") — вся страница целиком. Имена, заведённые тут,
+   видны в любом правиле файла.
+
+   Имена начинаются с двух дефисов — так помечаются СВОИ имена,
+   придуманные нами, а не слова языка. Берут их через var(--имя).
+
+   Правило то же, что с настройками в data.js:
+   значение живёт в одном месте, остальные его спрашивают. */
+
+:root {
+  --xs:   11px;      /* самые мелкие пометки: плашка "сегодня" */
+  --sm:   12px;      /* подписи групп меню, адрес почты */
+  --md:   13px;      /* второстепенный текст в карточках */
+  --base: 14px;      /* основной текст */
+  --lg:   15px;      /* названия дней, имена преподавателей */
+  --h1:   18px;      /* "Личный кабинет" в шапке */
+  --h2:   22px;      /* заголовок раздела */
+}
+
+
+/* ---------- ОБЩЕЕ ---------- */
+
+body {
+  margin: 0;                        /* убрать отступ, который браузер даёт сам */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: #f4f6f8;              /* нейтральный светло-серый фон страницы */
+  color: #1f2933;                   /* цвет текста по умолчанию */
+  min-height: 100vh;                /* высота — не меньше экрана */
+
+  /* Расположение: шапка сверху, под ней контент слева и узкая полоса меню справа. */
+  display: grid;
+  grid-template-columns: 1fr 64px;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "header header"
+    "main   nav";
+}
+
+/* ---------- ШАПКА ---------- */
+
+header {
+  grid-area: header;                /* занимает верхнюю полосу целиком */
+  background: #0c447c;              /* тёмно-синий */
+  color: #ffffff;
+  padding: 14px 24px;               /* отступ внутри: сверху-снизу 14, по бокам 24 */
+  display: flex;                    /* содержимое в строку */
+  justify-content: space-between;   /* название слева, цитата справа */
+  align-items: center;
+  gap: 24px;
+}
+
+header h1 {
+  font-size: var(--h1);
+  font-weight: 500;
+  margin: 0;
+}
+
+#quote {                            /* цитата дня, под именем */
+  font-style: italic;               /* курсив */
+  font-size: var(--base);
+  color: #5a646e;                   /* приглушённый серый */
+  max-width: 640px;
+  line-height: 1.65;                /* расстояние между строками */
+  margin: 0 0 18px;                 /* отступ снизу, до карточки */
+}
+
+/* ---------- МЕНЮ ---------- */
+
+nav {
+  grid-area: nav;
+  padding: 16px 12px;
+  position: relative;               /* точка отсчёта для выпадающего списка */
+}
+
+/* ---------- ТРИ ПОЛОСКИ ---------- */
+
+.burger {                           /* точка = ярлык */
+  width: 26px;
+  height: 18px;
+  display: flex;
+  flex-direction: column;           /* полоски друг под другом */
+  justify-content: space-between;   /* с равными промежутками */
+  cursor: pointer;
+}
+
+.burger span {
+  height: 3px;                      /* пустая коробка высотой 3px */
+  background: #0c447c;              /* с фоном — и это уже полоска */
+  border-radius: 2px;
+}
+
+/* Выпадающая часть целиком: одна коробка на все списки */
+.menu {
+  display: none;                    /* не показывать вообще */
+
+  position: absolute;               /* лечь поверх страницы, не раздвигая её */
+  top: 40px;                        /* на 40px ниже верха меню */
+  right: 12px;                      /* прижать к правому краю */
+  z-index: 10;                      /* поверх всего остального */
+
+  width: 210px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);   /* мягкая тень */
+  padding: 8px;
+}
+
+/* Раскрытие по щелчку — работает везде, и с мышью, и на телефоне. */
+
+nav.open .menu {                    /* когда по полоскам щёлкнули */
+  display: block;                   /* показать выпадающую часть */
+}
+
+/* Раскрытие по наведению — ТОЛЬКО там, где есть настоящая мышь.
+
+   На телефоне наведения не существует, но браузер его подделывает:
+   первое касание считает наведением и держит, пока не коснёшься
+   чего-то другого. Из-за этого меню не закрывалось: код снимал ярлык
+   open, а поддельное наведение оставалось и держало меню открытым.
+
+   @media — "применять правила внутри только при таком-то условии".
+   (hover: hover) — "устройство умеет настоящее наведение".
+   У мыши это верно, у пальца — нет. */
+
+@media (hover: hover) {
+  nav:hover .menu {                 /* когда мышь наведена на меню */
+    display: block;
+  }
+}
+
+nav ul {
+  list-style: none;                 /* убрать точки-маркеры */
+  margin: 0;
+  padding: 0;
+}
+
+.group {                            /* подпись группы: Учёба, Контакты */
+  margin: 12px 10px 4px;
+  font-size: var(--sm);
+  color: #8a9199;
+  cursor: pointer;                  /* курсор-рука: по ней можно щёлкнуть */
+  display: flex;                    /* текст слева, треугольник справа */
+  justify-content: space-between;
+}
+
+.group::after {                     /* ::after — дописать после текста */
+  content: "▾";                  /* треугольник вниз: группа раскрыта */
+}
+
+.group.collapsed::after {
+  content: "▸";                  /* треугольник вбок: группа свёрнута */
+}
+
+.group.collapsed + ul {             /* + значит "следующий сосед" */
+  display: none;                    /* свёрнута — список не показывать */
+}
+
+nav li {
+  padding: 9px 14px;
+  border-radius: 8px;               /* скруглённые углы */
+  font-size: var(--base);
+  color: #3b4652;
+  margin-bottom: 2px;
+  cursor: pointer;                  /* курсор-рука при наведении */
+}
+
+nav li:hover {                      /* :hover — "когда мышь наведена" */
+  background: #e6edf5;
+}
+
+nav li.active {                     /* точка = ярлык, решётка = метка */
+  background: #0c447c;
+  color: #ffffff;
+}
+
+/* ---------- СОДЕРЖИМОЕ ---------- */
+
+main {
+  grid-area: main;
+  padding: 16px 12px 24px 24px;
+}
+
+main > div {                        /* > значит "прямой ребёнок", не любой потомок */
+  background: #ffffff;              /* белая карточка */
+  border-radius: 12px;
+  padding: 16px 18px;
+}
+
+main h2 {
+  margin: 0 0 4px;
+  font-size: var(--h2);
+  font-weight: 500;
+}
+
+main p {
+  margin: 0 0 8px;
+  font-size: var(--base);
+  color: #5a646e;                   /* подписи серые */
+}
+
+main p span {
+  color: #1f2933;                   /* значения тёмные */
+}
+
+/* ---------- ПОМЕТКА «НЕОФИЦИАЛЬНЫЙ» ---------- */
+
+main p.disclaimer {                 /* p с ярлыком disclaimer */
+  margin-top: 48px;                 /* подальше от содержимого */
+  font-size: var(--xs);
+  color: #b0b6bc;                   /* бледнее обычных подписей */
+}
+
+/* На расписании пометку не показываем.
+   :not([hidden]) — "у которого НЕТ признака hidden", то есть открытый.
+   ~ — "стоящий после него на том же уровне" (сосед ниже по разметке).
+   Вместе: "пометка, если выше неё стоит ОТКРЫТОЕ расписание". */
+
+#section-schedule:not([hidden]) ~ .disclaimer {
+  display: none;
+}
+
+/* ---------- ГЕРБ В ШАПКЕ ---------- */
+
+header div {                        /* коробка, в которой герб и название стоят рядом */
+  display: flex;
+  align-items: center;
+  gap: 12px;                        /* расстояние между гербом и названием */
+}
+
+header img {
+  height: 45px;
+  background: #ffffff;              /* белая подложка: сам герб нарисован на белом */
+  border-radius: 6px;
+  padding: 4px 6px;
+}
+
+
+/* ---------- ТАБЛИЦА ---------- */
+
+table {
+  width: 100%;
+  border-collapse: collapse;        /* границы ячеек сливаются в одну линию */
+  font-size: var(--base);
+}
+
+th {
+  text-align: left;                 /* заголовки по левому краю, а не по центру */
+  padding: 8px 10px;
+  color: #8a9199;                   /* серые, тише самих данных */
+  font-weight: 500;
+  border-bottom: 1px solid #e3e7ec;
+}
+
+td {
+  padding: 10px;
+  border-bottom: 1px solid #f0f2f5;
+  color: #1f2933;
+}
+
+tr:last-child td {                  /* :last-child — "последний из своих" */
+  border-bottom: none;              /* у последней строки черту убрать */
+}
+
+
+/* ---------- РАСПИСАНИЕ ---------- */
+
+.schedule-group-picker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0 12px;
+  font-size: var(--base);
+}
+
+#schedule-group {
+  min-width: 180px;
+  padding: 7px 10px;
+  border: 1px solid #b9c7d5;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #1f2933;
+  font: inherit;
+  cursor: pointer;
+}
+
+#schedule-source {
+  margin: 0 0 16px;
+  color: #526275;
+  font-size: var(--sm);
+}
+
+.lesson-details {
+  margin-top: 5px;
+  color: #526275;
+  font-size: var(--sm);
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.lesson-details summary {
+  color: #0c447c;
+  cursor: pointer;
+}
+
+main h3 {                           /* название дня недели */
+  margin: 0 0 8px;
+  font-size: var(--lg);
+  font-weight: 500;
+  color: #5a646e;                   /* обычные дни — серые, тише */
+}
+
+/* Ярлык today теперь на КОРОБКЕ дня, а не на заголовке.
+   Поэтому правила пишутся так: "заголовок внутри сегодняшнего дня". */
+
+.day.today h3 {
+  color: #0c447c;                   /* синий, заметнее остальных */
+}
+
+.day.today h3::after {              /* ::after — дописать после текста */
+  content: "сегодня";
+  margin-left: 10px;
+  padding: 2px 10px;
+  border-radius: 20px;
+  background: #0c447c;              /* плашка синяя */
+  color: #ffffff;                   /* текст на ней белый */
+  font-size: var(--xs);
+  font-weight: 400;
+  vertical-align: 1px;              /* чуть приподнять, чтобы встала по центру */
+}
+
+.no-lessons {                       /* строка "сегодня пар нет" */
+  margin: 0 0 4px;
+  font-size: var(--base);
+  color: #8a9199;
+}
+
+.day {                              /* коробка одного дня */
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1.5px solid transparent;  /* рамка есть у всех, но невидимая */
+  margin-bottom: 10px;              /* чтобы дни не слипались */
+}
+
+.day.today {                        /* два ярлыка сразу: и день, и сегодняшний */
+  border-color: #0c447c;            /* рамка становится видимой */
+  background: #f2f6fb;              /* светлая заливка */
+}
+
+
+/* ---------- СТОЛБЦЫ РАСПИСАНИЯ ---------- */
+
+/* У каждого дня своя таблица, и каждая подбирала ширину под свой текст —
+   поэтому столбцы прыгали от дня ко дню. Задаём ширину сами. */
+
+#schedule-body table {
+  table-layout: fixed;              /* ширину берём из правил, а не из текста */
+}
+
+/* При table-layout: fixed ширину задаёт ПЕРВАЯ строка таблицы,
+   а теперь первой стала шапка. Значит, числа нужны и заголовкам, и ячейкам. */
+
+#schedule-body th:nth-child(1),     /* :nth-child(N) — N-й по счёту среди своих */
+#schedule-body td:nth-child(1) {
+  width: 115px;                     /* время */
+}
+
+#schedule-body th:nth-child(3),
+#schedule-body td:nth-child(3) {
+  width: 95px;                      /* аудитория */
+}
+
+#schedule-body th:nth-child(4),
+#schedule-body td:nth-child(4) {
+  width: 180px;                     /* преподаватель */
+}
+
+/* Второму столбцу — предмету — ширину не задаём: заберёт остаток. */
+
+/* Время лежит в разметке двумя кусочками — начало и конец порознь.
+   Так их можно поставить в столбик на телефоне.
+   Здесь, на широком экране, склеиваем обратно: дорисовываем тире
+   перед концом. ::before — "дописать ПЕРЕД содержимым". */
+
+#schedule-body td.time .to::before {
+  content: "–";
+}
+
+
+/* ---------- ПЛАШКА «ЛЕКЦИЯ» / «СЕМИНАР» ---------- */
+
+/* Лекция и семинар — разные вещи для студента: на лекцию идёт весь
+   поток в большой зал, на семинар — своя группа к своему преподавателю.
+   Поэтому плашки разного цвета, а не одна на оба случая. */
+
+.lesson-type {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 8px;
+  border-radius: 20px;
+  font-size: var(--xs);
+  font-weight: 400;
+  white-space: nowrap;            /* не переносить слово отдельно от плашки */
+  vertical-align: 1px;            /* чуть приподнять, чтобы встала по центру */
+}
+
+.type-лекция {
+  background: #e6edf5;
+  color: #0c447c;                 /* синий — как всё главное в проекте */
+}
+
+.type-семинар {
+  background: #eef0f2;
+  color: #5a646e;                 /* серый, тише: семинаров больше */
+}
+
+
+/* ---------- ШАПКА РАСПИСАНИЯ ---------- */
+
+/* Отступ и рамка те же, что у коробок дней, — чтобы столбцы совпали.
+   Рамка прозрачная: не видна, но держит место. */
+
+.schedule-head {
+  padding: 0 12px;
+  border: 1.5px solid transparent;
+  margin-bottom: 2px;
+}
+
+
+/* ---------- ЛИНИИ МЕЖДУ ДНЯМИ ---------- */
+
+/* Рамка у дней уже есть — прозрачная. Просто красим её нижнюю сторону.
+   :not(.today) — "кроме сегодняшнего": у него своя рамка, синяя и целиком. */
+
+.day:not(.today) {
+  border-bottom-color: #e3e7ec;
+  border-radius: 0;                 /* у прямой линии не должно быть закруглённых концов */
+}
+
+/* У последнего дня линия не нужна: под ним ничего нет. */
+.day:not(.today):last-child {
+  border-bottom-color: transparent;
+}
+
+
+/* ---------- ПЛОТНОСТЬ РАСПИСАНИЯ ---------- */
+
+/* Высоту строкам давали три отступа сразу. Ужимаем каждый.
+   Числа подбираются на глаз — меняй, если покажется тесно. */
+
+#schedule-body td {
+  padding: 7px 10px;                /* было 10 со всех сторон */
+}
+
+#schedule-body th {
+  padding: 6px 10px;                /* шапка тоже подтягивается */
+}
+
+#schedule-body h3 {
+  margin-bottom: 0;                 /* было 8: пары вплотную к названию дня */
+}
+
+.day {
+  padding: 6px 12px;                /* было 10 сверху и снизу */
+  margin-bottom: 6px;               /* было 10: дни ближе друг к другу */
+}
+
+
+/* ---------- ВАРИАНТ 3: ДЕНЬ УЗКОЙ СТРОКОЙ ---------- */
+/* Блок обособлен нарочно: чтобы отменить, достаточно удалить его целиком. */
+
+#schedule-body h3 {
+  font-size: var(--xs);
+  font-weight: 500;
+  text-transform: uppercase;        /* заглавными — только на вид, данные прежние */
+  letter-spacing: 0.03em;           /* чуть разредить буквы, так читается легче */
+  color: #0c447c;                   /* тёмно-синий, тот же что у шапки */
+  background: #e9edf2;              /* заметнее: на белой карточке #f4f6f8 не виден */
+  border-radius: 4px;
+  padding: 2px 10px;
+  margin: 0;                        /* пары прижимаются вплотную */
+}
+
+.day {
+  padding: 2px 12px 4px;            /* сверху почти ничего: полоска сама держит форму */
+}
+
+.day.today h3 {                     /* сегодняшний день — заметнее */
+  color: #0c447c;
+  background: #e6edf5;
+}
+
+
+/* ---------- ПОДПИСЬ ТЕКУЩЕЙ НЕДЕЛИ ---------- */
+
+#schedule-week {                    /* подпись недели рядом с заголовком */
+  font-size: var(--md);
+  font-weight: 400;                 /* не жирная, в отличие от заголовка */
+  color: #5a646e;
+  margin-left: 10px;
+}
+
+
+/* ---------- ЛИСТАНИЕ НЕДЕЛЬ ---------- */
+
+.week-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 10px;
+}
+
+.week-range {
+  font-size: var(--base);
+  font-weight: 500;
+  color: #1f2933;
+}
+
+.day-date {                         /* число рядом с названием дня */
+  font-weight: 400;
+  color: #8a9199;
+  text-transform: none;             /* отменяем заглавные, они тут лишние */
+  margin-left: 8px;
+}
+
+.week-nav button {
+  font: inherit;                    /* кнопка по умолчанию берёт свой шрифт — отменяем */
+  font-size: var(--md);
+  padding: 5px 14px;
+  border: 1px solid #d7dde5;
+  border-radius: 20px;
+  background: #ffffff;
+  color: #5a646e;
+  cursor: pointer;
+}
+
+.week-nav button:hover {
+  border-color: #0c447c;
+}
+
+
+
+
+/* ---------- СТРЕЛКИ ЛИСТАНИЯ ---------- */
+
+/* Ярлык arrow только у стрелок, поэтому кнопка "Сегодня" остаётся прежней. */
+
+.week-nav button.arrow {
+  font-size: var(--sm);
+  padding: 1px 8px;
+  line-height: 1.4;
+  color: #8a9199;
+}
+
+
+/* ---------- ПРЕПОДАВАТЕЛИ ---------- */
+
+.teacher {
+  padding: 14px 0;
+  border-bottom: 1px solid #f0f2f5;
+}
+
+.teacher:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.teacher h3 {
+  margin: 0 0 2px;
+  font-size: var(--lg);
+  font-weight: 500;
+  color: #1f2933;
+}
+
+.teacher p {
+  margin: 0 0 2px;
+  font-size: var(--md);
+  color: #5a646e;
+}
+
+.teacher-subject {
+  color: #0c447c !important;        /* предмет — синим, он главное в карточке */
+}
+
+.mail-link {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: var(--md);
+  color: #0c447c;
+  text-decoration: none;            /* убрать подчёркивание */
+  border: 1px solid #d7dde5;
+  border-radius: 20px;
+  padding: 4px 12px;
+}
+
+.mail-link:hover {
+  border-color: #0c447c;
+  background: #f2f6fb;
+}
+
+
+/* ---------- РАЗДЕЛ СОБИРАЕТСЯ ИЗ РАСПИСАНИЯ ---------- */
+
+.teachers-group {                   /* подпись: чья это группа */
+  margin: 0 0 14px !important;
+  font-size: var(--md) !important;
+  color: #8a9199 !important;
+}
+
+.no-group {                         /* группа ещё не выбрана */
+  margin: 0 !important;
+  color: #5a646e !important;
+}
+
+/* ---------- КОНТАКТЫ ПРЕПОДАВАТЕЛЯ ---------- */
+
+.teacher-mail {
+  margin-top: 6px !important;
+  color: #1f2933 !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--sm) !important;
+}
+
+.teacher-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+  flex-wrap: wrap;                  /* на узком экране перенесутся */
+}
+
+.copy-link {
+  font: inherit;
+  font-size: var(--md);
+  color: #5a646e;
+  background: #ffffff;
+  border: 1px solid #d7dde5;
+  border-radius: 20px;
+  padding: 4px 12px;
+  cursor: pointer;
+}
+
+.copy-link:hover {
+  border-color: #0c447c;
+}
+
+
+/* ---------- КНОПКИ В КАРТОЧКЕ ПРЕПОДАВАТЕЛЯ ---------- */
+
+/* Одно правило на обе: ссылка <a> и кнопка <button> — разные теги,
+   браузер рисует их по-своему. Общее правило выравнивает их
+   и не даёт разъехаться при будущих правках. */
+
+.mail-link,
+.copy-link {
+  display: inline-flex;             /* содержимое в строку */
+  align-items: center;              /* и по центру по высоте */
+  box-sizing: border-box;           /* рамка входит в заданную высоту */
+
+  height: 28px;
+  padding: 0 12px;
+  margin-top: 0;
+
+  font: inherit;                    /* кнопка иначе берёт системный шрифт */
+  font-size: var(--md);
+  line-height: 1;
+
+  border: 1px solid #d7dde5;
+  border-radius: 20px;
+  background: #ffffff;
+  text-decoration: none;            /* у ссылки убрать подчёркивание */
+  cursor: pointer;
+}
+
+.mail-link  { color: #0c447c; }     /* основное действие — синим */
+.copy-link  { color: #5a646e; }     /* запасное — тише */
+
+.mail-link:hover,
+.copy-link:hover {
+  border-color: #0c447c;
+  background: #f2f6fb;
+}
+
+
+/* ---------- УЗКИЙ ЭКРАН: ТЕЛЕФОН ---------- */
+
+/* Одно место, где сайт становится крупнее целиком.
+
+   (max-width: 640px) — "когда ширина экрана НЕ БОЛЬШЕ 640 точек".
+   Телефон в любом положении сюда попадает, ноутбук — нет.
+
+   Внутри переписаны те же семь имён. Правила по всему файлу
+   про это не знают: они спрашивают имя и получают новое число. */
+
+@media (max-width: 640px) {
+
+  :root {
+    --xs:   13px;
+    --sm:   14px;
+    --md:   15px;
+    --base: 16px;
+    --lg:   17px;
+    --h1:   20px;
+    --h2:   26px;
+  }
+
+  /* Полоса меню справа съедала 64 точки из 390 — на телефоне это
+     шестая часть ширины. Ужимаем, содержимому достаётся больше. */
+  body {
+    grid-template-columns: 1fr 52px;
+  }
+
+  nav {
+    padding: 14px 10px;
+  }
+
+  main {
+    padding: 14px 10px 24px 16px;
+  }
+
+  main > div {
+    padding: 14px 14px;
+  }
+
+  /* Пункты меню — крупнее, чтобы попадать пальцем, а не ногтем.
+     Меню тоже шире: в нём теперь текст 16px. */
+  nav li {
+    padding: 12px 16px;
+  }
+
+  .menu {
+    width: 250px;
+  }
+
+  /* Кнопки в карточках преподавателей: высота была рассчитана
+     под текст 13px, при 15px он в неё не помещается. */
+  .mail-link,
+  .copy-link {
+    height: 36px;
+    padding: 0 14px;
+  }
+
+
+  /* ---------- ШАПКА: 0,70 ОТ ПРЕЖНЕГО ---------- */
+
+  /* Шапка занимала 81 точку из 844 — почти десятую часть экрана,
+     и всё это ради герба и двух слов. Уменьшена до 0,70:
+     каждое число умножено на 0,7 и округлено.
+
+       отступ   14 -> 10        герб     45 -> 32
+       по бокам 24 -> 16        название 20 -> 14
+
+     Название стало меньше основного текста — так и должно быть:
+     это подпись сайта, а не его содержимое. */
+
+  header {
+    padding: 10px 16px;
+    gap: 12px;
+  }
+
+  header img {
+    height: 32px;
+    padding: 3px 4px;
+    border-radius: 5px;
+  }
+
+  header h1 {
+    font-size: 14px;
+  }
+
+  header div {
+    gap: 8px;                       /* было 12: между гербом и названием */
+    flex-shrink: 0;
+  }
+
+
+  /* ---------- ВОЗДУХ МЕЖДУ СТРОКАМИ ---------- */
+
+  /* Отступы задавались под текст 13–14px. При 15–16px строки
+     сошлись вплотную: буквы стали больше, а расстояния остались
+     прежними. Поэтому воздух добавляется отдельно от размера. */
+
+  main h2 {
+    margin-bottom: 14px;            /* было 4: заголовок дышит */
+  }
+
+  main p {
+    margin-bottom: 12px;            /* было 8 */
+    line-height: 1.5;               /* строки внутри абзаца */
+  }
+
+  #quote {
+    margin-bottom: 22px;            /* было 18: цитата отделена от карточки */
+  }
+
+  main > div {
+    padding: 20px 16px;             /* было 14: внутри карточки просторнее */
+  }
+
+
+  /* ---------- РАСПИСАНИЕ: пара становится карточкой ---------- */
+
+  /* Четыре столбца в 390 точек не влезают: только время, аудитория
+     и преподаватель занимали 115 + 95 + 180 = 390, и предмету
+     не оставалось ничего — он лез поверх соседей.
+
+     На узком экране раскладка другая:
+
+       10:10   Экономика предприятия
+       11:40   3-401 · Соколова Е. В.
+
+     Разметка при этом ТА ЖЕ САМАЯ. Меняется только расположение. */
+
+  /* Шапка столбцов больше не нужна: подписи заменяет расположение. */
+  .schedule-head {
+    display: none;
+  }
+
+  /* Таблица перестаёт вести себя как таблица. */
+  #schedule-body table,
+  #schedule-body tbody {
+    display: block;
+  }
+
+  /* Строка становится сеткой: два ряда и три столбца.
+     grid-template-areas рисует раскладку словами — буквально
+     картинка из имён, где что лежит. Время занимает оба ряда. */
+  #schedule-body tr {
+    display: grid;
+    grid-template-columns: 54px auto 1fr;
+    grid-template-areas:
+      "time subject subject"
+      "time room    teacher";
+    column-gap: 8px;
+    row-gap: 6px;                   /* между предметом и строкой снизу */
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f2f5;
+  }
+
+  /* Длинные названия переносятся на две-три строки — им нужен
+     просвет между строками, иначе буквы слипаются. */
+  #schedule-body td.subject,
+  #schedule-body td.room,
+  #schedule-body td.teacher,
+  #schedule-body td.time span {
+    line-height: 1.4;
+  }
+
+  /* Предмет и аудитория стоят в одном столбце — отступ слева
+     у них общий, чтобы левый край совпадал.
+     Расстояние до времени складывается из него и column-gap. */
+  #schedule-body td.subject,
+  #schedule-body td.room {
+    padding-left: 6px;
+  }
+
+  #schedule-body tr:last-child {
+    border-bottom: none;
+  }
+
+  #schedule-body td {
+    display: block;
+    padding: 0;
+    border: none;
+  }
+
+  /* Каждой ячейке — своё место в сетке. width: auto отменяет
+     жёсткие ширины, заданные для широкого экрана. */
+  #schedule-body td.time    { grid-area: time;    width: auto; }
+  #schedule-body td.subject { grid-area: subject; width: auto; }
+  #schedule-body td.room    { grid-area: room;    width: auto; }
+  #schedule-body td.teacher { grid-area: teacher; width: auto; }
+
+  /* Время в столбик: два кусочка становятся строками,
+     тире убираем (оно нужно только когда они в одну строку). */
+  #schedule-body td.time span {
+    display: block;
+    line-height: 1.35;
+  }
+
+  #schedule-body td.time .to::before {
+    content: "";
+  }
+
+  #schedule-body td.time .to {
+    color: #8a9199;                 /* конец пары тише начала */
+  }
+
+  /* Аудитория и преподаватель — второй строкой, мельче и тише. */
+  #schedule-body td.room,
+  #schedule-body td.teacher {
+    font-size: var(--md);
+    color: #5a646e;
+  }
+
+  #schedule-body td.teacher::before {
+    content: "· ";                  /* точка-разделитель между ними */
+  }
+
+  /* ----- Шапка дня ----- */
+
+  /* Размер подобран на глаз, а не по числу: название дня написано
+     ЗАГЛАВНЫМИ, а заглавные при одном и том же числе выглядят
+     крупнее строчных. Чтобы полоска дня читалась наравне
+     с предметами, число у неё должно быть меньше. */
+  #schedule-body h3 {
+    font-size: var(--sm);
+    padding: 4px 10px;
+  }
+
+  .day-date {
+    font-size: var(--md);
+    white-space: nowrap;            /* "21 сентября" не рвать между словами */
+  }
+
+  .day.today h3::after {            /* плашка "сегодня" */
+    font-size: var(--sm);
+    padding: 3px 10px;
+  }
+
+  /* ----- Воздух между днями ----- */
+
+  /* Дни шли почти вплотную: полоска следующего начиналась сразу
+     под последней парой предыдущего, и всё сливалось в одно полотно. */
+  .day {
+    padding: 6px 12px 14px;
+    margin-bottom: 28px;            /* было 18 */
+  }
+
+  /* Строка листания недель отделяется от первого дня:
+     раньше "21–27 сентября" и "ПОНЕДЕЛЬНИК" стояли вплотную. */
+  .week-nav {
+    margin-bottom: 22px;            /* было 10 */
+  }
+
+}

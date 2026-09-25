@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Личный кабинет студента МГУ</title>
+  <!-- ?v=4 — метка версии. Для браузера "style.css" и "style.css?v=4" —
+       разные адреса, поэтому старую копию из своей памяти он взять
+       не может и идёт на сервер. Временная мера: телефон застрял
+       на вчерашних файлах. Убрать, когда убедимся, что сервер
+       сам запрещает кеширование. -->
+  <link rel="stylesheet" href="style.css?v=4">
+</head>
+<body>
+
+  <!-- ШАПКА. header ("шапка") — коробка для всего верха страницы -->
+  <header>
+    <!-- img ("image", картинка). src ("source", источник) — где файл лежит.
+         alt — текст на случай, если картинка не загрузилась. -->
+    <div>
+      <img src="logo.png" alt="Герб МГУ">
+      <h1>Личный кабинет</h1>
+    </div>
+  </header>
+
+  <!-- МЕНЮ. nav ("навигация") — коробка для меню
+       ul ("ненумерованный список") — коробка для пунктов
+       li ("пункт списка") — один пункт -->
+  <nav>
+
+    <!-- Три полоски: пустые коробочки, которым дали высоту и фон.
+         onclick — по щелчку открыть или закрыть список. -->
+    <div class="burger" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+
+    <!-- Выпадающая часть: одна коробка, внутри несколько списков
+         с подписями между ними. -->
+    <div class="menu">
+
+      <ul>
+        <li id="menu-section-profile" class="active" onclick="showSection('section-profile')">Профиль</li>
+      </ul>
+
+      <p class="group" onclick="toggleGroup(this)">Учёба</p>
+      <ul>
+        <li id="menu-section-schedule" onclick="showSection('section-schedule')">Расписание</li>
+      </ul>
+
+      <p class="group" onclick="toggleGroup(this)">Контакты</p>
+      <ul>
+        <li id="menu-section-teachers" onclick="showSection('section-teachers')">Преподаватели</li>
+        <li id="menu-section-admin" onclick="showSection('section-admin')">Администрация</li>
+      </ul>
+
+      <p class="group" onclick="toggleGroup(this)">Разное</p>
+      <ul>
+        <li id="menu-section-quotes" onclick="showSection('section-quotes')">Крутые цитатки</li>
+      </ul>
+
+    </div>
+
+  </nav>
+
+  <!-- СОДЕРЖИМОЕ. main ("основной") — коробка для разделов.
+       Разделы лежат все сразу, но видно один: у остальных стоит hidden. -->
+  <main>
+
+    <!-- ===== РАЗДЕЛ: ПРОФИЛЬ ===== -->
+    <section id="section-profile">
+      <h2 id="profile-name">—</h2>
+      <p id="quote">—</p>
+
+      <div>
+        <p id="row-institute">Факультет: <span id="profile-institute">—</span></p>
+        <p id="row-program">Направление: <span id="profile-program">—</span></p>
+        <p id="row-group">Группа: <span id="profile-group">—</span></p>
+        <p id="row-year">Курс: <span id="profile-year">—</span></p>
+      </div>
+    </section>
+
+    <!-- ===== ОСТАЛЬНЫЕ РАЗДЕЛЫ =====
+         hidden ("скрытый") — признак, по которому браузер не показывает коробку.
+         Коробка в разметке есть, но её не видно. -->
+
+    <section id="section-schedule" hidden>
+      <!-- Пустое место с меткой: текущую неделю положит app.js. -->
+      <h2>Расписание <span id="schedule-week"></span></h2>
+      <div class="schedule-group-picker">
+        <label for="schedule-group">Группа</label>
+        <select id="schedule-group">
+          <option value="">Выберите группу</option>
+        </select>
+      </div>
+      <p id="schedule-source"></p>
+
+      <!-- Пустая коробка. Таблицы по дням построит app.js. -->
+      <div id="schedule-body"></div>
+    </section>
+
+    <section id="section-plan" hidden>
+      <h2>Учебный план</h2>
+      <div><p>Раздел в работе.</p></div>
+    </section>
+
+    <section id="section-teachers" hidden>
+      <h2>Преподаватели</h2>
+
+      <!-- Пустая коробка: карточки положит app.js. -->
+      <div id="teachers-body"></div>
+    </section>
+
+    <section id="section-admin" hidden>
+      <h2>Администрация</h2>
+      <div><p>Раздел в работе.</p></div>
+    </section>
+
+    <section id="section-quotes" hidden>
+      <h2>Крутые цитатки</h2>
+      <div><p>Раздел в работе.</p></div>
+    </section>
+
+    <!-- Пометка в самом низу. Стоит вне разделов, поэтому видна
+         под любым из них. Нарочно мелкая и бледная — так решено. -->
+    <p class="disclaimer">Неофициальный сайт, не связан с МГУ.</p>
+
+  </main>
+
+  <!-- ?v=4 — та же метка версии, что и у стилей. См. комментарий вверху. -->
+  <script src="data.js?v=4"></script>
+  <script src="app.js?v=4"></script>
+
+</body>
+</html>
