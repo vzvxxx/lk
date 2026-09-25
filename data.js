@@ -903,41 +903,60 @@ const scheduleByGroup = {
 
 /* ---------- ВЫБРАННАЯ ГРУППА ---------- */
 
-/* Одно значение — одно место хранения. Раньше выбор жил в app.js,
-   а профиль держал свою копию в profile.group. Теперь владелец один.
-
-   localStorage ("местное хранилище") — память браузера на этом
-   устройстве. Переживает закрытие вкладки и выключение компьютера,
-   но живёт только в этом браузере: на телефоне будет свой выбор.
-
-   Обращения обёрнуты в try/catch: при открытии сайта двойным кликом
-   из файла некоторые браузеры хранилище запрещают. Тогда выбор
-   работает до закрытия страницы, а сайт не падает. */
-
+/* Последний выбор хранится на устройстве, а номер в ссылке служит
+   запасным вариантом для нового ярлыка на экране телефона.
+   Сохранённый выбор важнее ссылки: если в приложении сменить группу,
+   старый адрес ярлыка не должен возвращать прежнюю группу. */
 const gruppaKey = "lkmsu.schedule.group.v1";
-
 let vybrannayaGruppa = "";
 
-try {
-  vybrannayaGruppa = localStorage.getItem(gruppaKey) || "";
-} catch (error) {
-  /* хранилище запрещено — останемся с пустым выбором */
+function isScheduleGroup(group) {
+  return Object.prototype.hasOwnProperty.call(scheduleByGroup, group);
 }
 
+try {
+  const saved = localStorage.getItem(gruppaKey);
+  if (isScheduleGroup(saved)) vybrannayaGruppa = saved;
+} catch (error) {
+  /* Если хранилище недоступно, попробуем номер из ссылки. */
+}
+
+if (!vybrannayaGruppa) {
+  const linked = new URL(location.href).searchParams.get("group");
+  if (isScheduleGroup(linked)) vybrannayaGruppa = linked;
+}
+
+function saveGroup() {
+  try {
+    localStorage.setItem(gruppaKey, vybrannayaGruppa);
+  } catch (error) {
+    /* Даже без хранилища выбор останется в текущей ссылке. */
+  }
+
+  const url = new URL(location.href);
+  if (vybrannayaGruppa) {
+    url.searchParams.set("group", vybrannayaGruppa);
+  } else {
+    url.searchParams.delete("group");
+  }
+  if (url.href !== location.href) {
+    try {
+      history.replaceState(history.state, "", url.href);
+    } catch (error) {
+      /* Открытие локального файла может запрещать изменение адреса. */
+    }
+  }
+}
+
+saveGroup();
 
 async function getGroup() {
   return vybrannayaGruppa;
 }
 
-
 async function setGroup(group) {
-  vybrannayaGruppa = group;
-
-  try {
-    localStorage.setItem(gruppaKey, group);
-  } catch (error) {
-    /* не сохранилось — выбор всё равно действует до закрытия страницы */
-  }
+  vybrannayaGruppa = isScheduleGroup(group) ? group : "";
+  saveGroup();
 }
 
 
