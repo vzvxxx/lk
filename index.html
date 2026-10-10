@@ -38,13 +38,9 @@
          с подписями между ними. -->
     <div class="menu">
 
-      <ul>
-        <li id="menu-section-profile" class="active" onclick="showSection('section-profile')">Профиль</li>
-      </ul>
-
       <p class="group" onclick="toggleGroup(this)">Учёба</p>
       <ul>
-        <li id="menu-section-schedule" onclick="showSection('section-schedule')">Расписание</li>
+        <li id="menu-section-schedule" class="active" onclick="showSection('section-schedule')">Расписание</li>
       </ul>
 
       <p class="group" onclick="toggleGroup(this)">Контакты</p>
@@ -66,8 +62,10 @@
        Разделы лежат все сразу, но видно один: у остальных стоит hidden. -->
   <main>
 
-    <!-- ===== РАЗДЕЛ: ПРОФИЛЬ ===== -->
-    <section id="section-profile">
+    <!-- ===== РАЗДЕЛ: ПРОФИЛЬ =====
+         Скрыт: пункта в меню нет, открывается только по адресу #profile.
+         Вернуть — вписать в меню строку <li> и убрать hidden. -->
+    <section id="section-profile" hidden>
       <h2 id="profile-name">—</h2>
       <p id="quote">—</p>
 
@@ -83,7 +81,7 @@
          hidden ("скрытый") — признак, по которому браузер не показывает коробку.
          Коробка в разметке есть, но её не видно. -->
 
-    <section id="section-schedule" hidden>
+    <section id="section-schedule">
       <!-- Пустое место с меткой: текущую неделю положит app.js. -->
       <h2>Расписание <span id="schedule-week"></span></h2>
       <div class="schedule-group-picker">
@@ -126,8 +124,8 @@
 
   </main>
 
-  <!-- Версия data.js обновлена, чтобы загрузилось сохранение группы в ссылке. -->
-  <script src="data.js?v=5"></script>
+  <!-- ?v=4 — та же метка версии, что и у стилей. См. комментарий вверху. -->
+  <script src="data.js?v=4"></script>
   <script src="app.js?v=4"></script>
 
 </body>

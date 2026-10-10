@@ -152,14 +152,14 @@ function toggleGroup(heading) {
    null — "ничего": так getElementById отвечает, когда не нашёл.
 
    Проверка ловит два случая сразу: адрес пустой (зашли впервые)
-   и адрес с опечаткой. В обоих открываем профиль. */
+   и адрес с опечаткой. В обоих открываем расписание. */
 
 function openFromAddress() {
   const metka = location.hash.replace("#", "");
   const id    = "section-" + metka;
 
   if (document.getElementById(id) === null) {
-    showSection("section-profile");
+    showSection("section-schedule");
   } else {
     showSection(id);
   }
