@@ -28,6 +28,7 @@ async function showProfile() {
      Точка в p.fullName читается так же, как везде: "у него" —
      у объекта p взять поле fullName. */
   document.getElementById("quote").textContent            = p.quote;
+  document.getElementById("header-quote").textContent     = p.quote;
   document.getElementById("profile-name").textContent      = p.fullName;
   document.getElementById("profile-institute").textContent = p.institute;
   document.getElementById("profile-program").textContent   = p.program;
